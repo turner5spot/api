@@ -39,7 +39,7 @@ app.get('/api/state/:state',
 	(req,resp) => { //handler
 		// Read the value from the route :state
 		const state = req.params.state
-		// Read te query string
+		// Read te query string 
 		const limit = parseInt(req.query.limit) || 3;
 		const offset = parseInt(req.query.offset) || 1;
 		// 10 result from the top
@@ -58,7 +58,7 @@ app.get('/api/state/:state',
 // TODO GET /api/city/:cityId
 app.get('/api/cityId/:cityId',
 	(req,resp) => { //handler
-		const cityId = req.params.cityId
+		const cityId = req.params.cityId 
 		const result = db.findCityById(cityId)
 		// status code
 		resp.status(200)
@@ -71,47 +71,76 @@ app.get('/api/cityId/:cityId',
 )
 
 // TODO POST /api/city
-app.post('/api/city',
-		(req,resp) => { // handler
-			const body = req.body
-//			console.info ('body =', body)
-			if (!db.validateForm(body)) {
-				resp.status(400)
-				resp.type('application/json')
-		    resp.json({'message':'incomplete form'})
-				console.info ('valid =', 'no')
-				return
-			}
-//      reformat location
-   		const array = body['loc'].split(',').map(Number)
-  		body['loc'] = array
-  	  console.info ('body =', body['loc'])
-			db.insertCity(body)
-			resp.status(201)
+// Content-Type
+app.post("/api/city",
+	(req,resp) => {
+		const body = req.body;
+		if (db,validateForm(body)) {
+			resp.status(400)
 			resp.type('application/json')
-			resp.json({'message':'created'})
+			resp.json({'message':'imcomplete form'})
+			return
 		}
+	}
+	// we passed validation
+	//
+	db.insertCity(body)
+	resp.status(201)
+	resp.type('application/json')
+	resp.json({message: 'created'})
 	)
 
-// TODO GET /api/city/:cityId
-app.get('/api/cityName/:cityName',
-		(req,resp) => { //handler
-			const cityName = req.params.cityName
-			const result = db.findCitiesByName(cityName)
-			// status code
-			resp.status(200)
-			//set content type
-			resp.type('application/json')
-			resp.set('X-generated-on',(new Date()).toDateString())
-			resp.set('Acess-Conrol-Allow-Origin','*')
-			resp.json(result)
-		}
-	)
+// Optional workshop
+// TODO HEAD /api/state/:state
+// IMPORTANT: HEAD must be place before GET for the
+// same resource. Otherwise the GET handler will be invoked
 
+
+// TODO GET /state/:state/count
+app.get('//state/:state/count',
+	(req,resp) => { //handler
+		const state = req.params.state 
+		const count = db.countCitiesInState(state)
+		const result = {
+			State: state,
+			numOfCities: count,
+			timestamp: (new Date()).toDateString()
+		}		
+		// status code
+		resp.status(200)
+		//set content type
+		resp.type('application/json')
+		resp.set('X-generated-on',(new Date()).toDateString())
+		resp.set('Acess-Conrol-Allow-Origin','*')
+		resp.json(result)
+	}
+)
+
+
+// TODO GET /api/city/:name
+app.get('/api/city/:name',
+	(req,resp) => { //handler
+		const state = req.params.state 
+		const count = db.findCitiesByName(state)
+		const result = {
+			State: state,
+			numOfCities: count,
+			timestamp: (new Date()).toDateString()
+		}		
+		// status code
+		resp.status(200)
+		//set content type
+		resp.type('application/json')
+		resp.set('X-generated-on',(new Date()).toDateString())
+		resp.set('Acess-Conrol-Allow-Origin','*')
+		resp.json(result)
+	}
+)
 
 // End of workshop
 
-const PORT = parseInt(process.argv[2] || process.env.APP_PORT) || 3030;
+const PORT = parseInt(process.argv[2] || process.env.APP_PORT) || 3000;
 app.listen(PORT, () => {
 	console.info(`Application started on port ${PORT} at ${new Date()}`);
 });
+

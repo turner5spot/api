@@ -15,11 +15,11 @@ const MAP_URL='https://maps.googleapis.com/maps/api/staticmap'
 const NEWS_URL = 'https://newsapi.org/v2/top-headlines'
 
 const makeInvocation = function(url) {
-    return ((params) =>
+    return ((params) => 
         new Promise((resolve, reject) => {
             request.get(url, ('qs' in params? params: { qs: params }),
                 (err, h, body) => {
-                    if (err)
+                    if (err) 
                         return reject(err);
                     if (h.headers['content-type'].startsWith('application/json'))
                         return resolve(JSON.parse(body));
@@ -80,8 +80,7 @@ app.get('/information', (req, resp) => {
     //Use the exact query parameter names as keys
     //Weather for city is in cityName variable
     //API key is in keys.weather
-    const params = { q: cityName,
-      APPID: keys.weather
+    const params = {
     }
 
     getWeather(params)
@@ -93,7 +92,7 @@ app.get('/information', (req, resp) => {
             //Use the exact query parameter names as keys
             //The 2 character country code is found in countryCode variable
             //API key is in keys.news
-            const params = { apiKey: keys.news, country: countryCode
+            const params = {
             }
             return (Promise.all([ result, getNews(params) ]));
         })
@@ -134,9 +133,9 @@ app.get('/information', (req, resp) => {
             })
         })
         .catch(error => {
-            resp.status(400);
-            resp.type('text/plain');
-            resp.send(error);
+            resp.status(400); 
+            resp.type('text/plain'); 
+            resp.send(error); 
             return;
         })
 

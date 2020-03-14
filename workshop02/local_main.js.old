@@ -1,0 +1,43 @@
+const range = require('express-range')
+const compression = require('compression')
+// add cors
+const cors = require ('cors')
+const express = require('express')
+
+const data = require('./zips')
+const CitiesDB = require('./zipsdb')
+
+//Load application keys
+const db = CitiesDB(data);
+
+const app = express();
+
+//add cors
+app.use(cors())
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Start of workshop
+
+// Mandatory workshop
+// TODO GET /api/states
+app.get('/api/states',
+		(req,resp) => { // handler
+				const result = db.findAllStates();
+				resp.status(200)
+				// resp.set('content-Type','application/json')
+				resp.type('application/json');
+				resp.set('Access-Control-Allow-Origin','www.google.com');
+				resp.json(result)
+			}
+		)
+
+
+
+
+// End of workshop
+
+const PORT = parseInt(process.argv[2] || process.env.APP_PORT) || 3000;
+app.listen(PORT, () => {
+	console.info(`Application started on port ${PORT} at ${new Date()}`);
+});
